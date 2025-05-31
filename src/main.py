@@ -39,3 +39,7 @@ def materialize():
   row = next(result)
   
   return {"total": row["total"]}
+
+
+if __name__ == '__main__':
+    main()
