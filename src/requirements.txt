@@ -1,0 +1,2 @@
+# Add function packages requirements here
+google-cloud-bigquery
