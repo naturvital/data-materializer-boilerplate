@@ -1,4 +1,6 @@
-gcloud beta run jobs create my-bq-job \
-  --image gcr.io/paranoid-playground/materializer-boilerplate \
+gcloud builds submit --tag gcr.io/paranoid-playground/data-materializer-boilerplate
+
+gcloud beta run jobs create sample-job \
+  --image gcr.io/paranoid-playground/data-materializer-boilerplate \
   --region=us-east1 \
-  --service-account=paranoid-playground@appspot.gserviceaccount.com
+  --service-account=nv-bq-default-usr@paranoid-playground.iam.gserviceaccount.com
