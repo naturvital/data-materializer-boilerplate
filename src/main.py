@@ -1,29 +1,39 @@
-import json
-from http import HTTPStatus
+import logging
 from google.cloud import bigquery
-from flask import Request, Response
 
 
-def fn_hook(request: Request):
-  
-  if request.method != 'POST':
-    return Response(status=HTTPStatus.METHOD_NOT_ALLOWED)
-  
-  if not request.data:
-    return Response(status=HTTPStatus.BAD_REQUEST)
-  
-  result = process_message(request.json)
-  
-  return Response(json.dumps(result), status=HTTPStatus.OK, content_type='application/json')
+# Configure logging at module level
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
-def process_message(payload: dict):
+def main():
+  
+  logger.info('Starting job execution')
+  
+  try:
+    result = materialize()
+    logger.info(f"Query result: {result}")
+  except Exception as e:
+    logger.exception("Job failed due to an error")
+    raise
+  
+  logger.info('Finishing job execution')
+
+
+def materialize():
+  
   client = bigquery.Client()
+  
   query = """
   SELECT COUNT(*) AS total
   FROM `paranoid-playground.snapshots.oinv`
   """
   
   result = client.query(query).result()
-  row = next(result)  # only one row expected
+  row = next(result)
+  
   return {"total": row["total"]}
